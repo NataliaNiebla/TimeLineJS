@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Línea del Tiempo de JavaScript</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+        
+
+
+        .timeline-item {
+            transition: all 0.4s ease;
+            opacity: 0.7;
+            transform: scale(0.95);
+            filter: blur(1px);
+        }
+        
+        .timeline-item.active {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0);
+        }
+        
+        .timeline-dot {
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10; /* Ensure dots are above the line */
+        }
+        
+        .timeline-dot:hover {
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+        
+        .timeline-line {
+            height: 4px;
+            background: linear-gradient(90deg, 
+                #4ade80 0%, 
+                #facc15 10%, 
+                #3b82f6 20%, 
+                #4ade80 30%, 
+                #ef4444 40%, 
+                #facc15 50%, 
+                #8b5cf6 60%,
+                #3b82f6 70%,
+                #ef4444 75%,
+                #8b5cf6 80%,
+                #f97316 85%,
+                #92400e 90%,
+                #000000 95%,
+                #f97316 100%);
+            position: relative;
+            z-index: 1; /* Ensure line is behind the dots */
+        }
+        
+        .card {
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-5px);
+        }
+        
+        .year-label {
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .navigation-button {
+            transition: all 0.2s ease;
+        }
+        
+        .navigation-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .navigation-button:active {
+            transform: scale(0.95);
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-800">La Historia de JavaScript</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Explora la evolución de uno de los lenguajes de programación más influyentes en el desarrollo web moderno.</p>
+        </header>
+        
+        <div class="relative mb-16">
+            <!-- Timeline Line (now behind dots) -->
+            <div class="timeline-line mb-8"></div>
+            
+            <!-- Timeline Dots -->
+            <div class="flex justify-between absolute w-full top-0 -mt-4">
+                <div class="timeline-dot bg-green-400 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="1995">
+                    <span class="year-label absolute -bottom-8">1995</span>
+                </div>
+                <div class="timeline-dot bg-yellow-400 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="1997">
+                    <span class="year-label absolute -bottom-8">1997</span>
+                </div>
+                <div class="timeline-dot bg-blue-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2005">
+                    <span class="year-label absolute -bottom-8">2005</span>
+                </div>
+                <div class="timeline-dot bg-green-400 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2006">
+                    <span class="year-label absolute -bottom-8">2006</span>
+                </div>
+                <div class="timeline-dot bg-red-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2008">
+                    <span class="year-label absolute -bottom-8">2008</span>
+                </div>
+                <div class="timeline-dot bg-yellow-400 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2009a">
+                    <span class="year-label absolute -bottom-8">2009</span>
+                </div>
+                <div class="timeline-dot bg-purple-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2009b">
+                    <span class="year-label absolute -bottom-8">2009</span>
+                </div>
+                <div class="timeline-dot bg-blue-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2015">
+                    <span class="year-label absolute -bottom-8">2015</span>
+                </div>
+                <div class="timeline-dot bg-red-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2016a">
+                    <span class="year-label absolute -bottom-8">2016</span>
+                </div>
+                <div class="timeline-dot bg-purple-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2016b">
+                    <span class="year-label absolute -bottom-8">2016</span>
+                </div>
+                <div class="timeline-dot bg-orange-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2020">
+                    <span class="year-label absolute -bottom-8">2020</span>
+                </div>
+                <div class="timeline-dot bg-amber-800 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2021">
+                    <span class="year-label absolute -bottom-8">2021</span>
+                </div>
+                <div class="timeline-dot bg-black w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2023">
+                    <span class="year-label absolute -bottom-8 text-black">2023</span>
+                </div>
+                <div class="timeline-dot bg-orange-500 w-8 h-8 rounded-full flex items-center justify-center border-4 border-white" data-year="2024">
+                    <span class="year-label absolute -bottom-8">2024</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation Buttons -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button id="prevBtn" class="navigation-button bg-gray-800 text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+                Anterior
+            </button>
+            <button id="nextBtn" class="navigation-button bg-gray-800 text-white px-6 py-2 rounded-full flex items-center gap-2 hover:bg-gray-700">
+                Siguiente
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Timeline Content -->
+        <div id="timelineContent" class="space-y-8">
+            <!-- 1995 -->
+            <div class="timeline-item" data-year="1995">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-green-400">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-400 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟢</div>
+                        <h2 class="text-2xl font-bold">1995 – Origen y nombre LiveScript</h2>
+                    </div>
+                    <p class="text-gray-700">JavaScript fue creado por Brendan Eich mientras trabajaba en Netscape. Inicialmente llamado LiveScript, fue renombrado como JavaScript para aprovechar la popularidad de Java en ese momento. Se desarrolló en apenas 10 días y se diseñó para agregar interactividad a las páginas web dentro del navegador Netscape Navigator.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Netscape</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Brendan Eich</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">LiveScript</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 1997 -->
+            <div class="timeline-item" data-year="1997">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-yellow-400">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-400 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟡</div>
+                        <h2 class="text-2xl font-bold">1997 – Estandarización ECMAScript</h2>
+                    </div>
+                    <p class="text-gray-700">Para evitar fragmentación entre navegadores, JavaScript fue estandarizado por ECMA International como ECMAScript. La versión ECMAScript 1 se publicó en 1997, estableciendo las bases comunes para la evolución del lenguaje y permitiendo que otros navegadores pudieran implementarlo de forma coherente.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">ECMAScript</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Estandarización</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">ECMA International</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2005 -->
+            <div class="timeline-item" data-year="2005">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-blue-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🔵</div>
+                        <h2 class="text-2xl font-bold">2005 – AJAX</h2>
+                    </div>
+                    <p class="text-gray-700">AJAX (Asynchronous JavaScript and XML) revolucionó el desarrollo web al permitir que las páginas se actualizaran de forma dinámica sin recargar. Esta técnica, combinando JavaScript con solicitudes HTTP asíncronas, permitió aplicaciones web más rápidas e interactivas, como Google Maps y Gmail, marcando el inicio de la web 2.0.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">AJAX</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Web 2.0</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Google Maps</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Gmail</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2006 -->
+            <div class="timeline-item" data-year="2006">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-green-400">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-green-400 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟢</div>
+                        <h2 class="text-2xl font-bold">2006 – Lanzamiento de jQuery</h2>
+                    </div>
+                    <p class="text-gray-700">jQuery fue una de las primeras bibliotecas de JavaScript en simplificar la manipulación del DOM, eventos, efectos y AJAX. Su lema "escribe menos, haz más" captó la atención de millones de desarrolladores. Permitió escribir código más limpio y compatible entre navegadores, acelerando el desarrollo web antes de que surgieran los frameworks modernos.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">jQuery</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">DOM</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Compatibilidad</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2008 -->
+            <div class="timeline-item" data-year="2008">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-red-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🔴</div>
+                        <h2 class="text-2xl font-bold">2008 – Motor V8 de Google</h2>
+                    </div>
+                    <p class="text-gray-700">Google lanzó el motor V8 junto con su navegador Chrome. V8 es un motor JavaScript de alto rendimiento que compila código directamente a lenguaje máquina. Su velocidad y eficiencia transformaron el ecosistema JavaScript y permitieron su uso fuera del navegador, como en Node.js.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">V8</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Google Chrome</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Rendimiento</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2009 ES5 -->
+            <div class="timeline-item" data-year="2009a">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-yellow-400">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-yellow-400 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟡</div>
+                        <h2 class="text-2xl font-bold">2009 – Nace ECMAScript 5 (ES5)</h2>
+                    </div>
+                    <p class="text-gray-700">ECMAScript 5 trajo funciones clave como strict mode, JSON, y mejoras en arrays y objetos. Fue un punto de inflexión para JavaScript moderno, ya que muchas nuevas herramientas y bibliotecas empezaron a depender de ES5 como base, marcando el inicio del alejamiento de los hacks y código poco estructurado.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">ES5</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Strict Mode</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">JSON</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2009 Node.js -->
+            <div class="timeline-item" data-year="2009b">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-purple-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟣</div>
+                        <h2 class="text-2xl font-bold">2009 – Node.js</h2>
+                    </div>
+                    <p class="text-gray-700">Node.js permitió ejecutar JavaScript en el servidor, expandiendo su uso más allá del navegador. Creado por Ryan Dahl, Node.js usa el motor V8 de Google y permite construir aplicaciones del lado del servidor con gran eficiencia, gracias a su modelo de entrada/salida no bloqueante basado en eventos.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Node.js</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Servidor</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Ryan Dahl</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Eventos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2015 -->
+            <div class="timeline-item" data-year="2015">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-blue-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🔵</div>
+                        <h2 class="text-2xl font-bold">2015 – Lanzamiento de ECMAScript 6 (ES6)</h2>
+                    </div>
+                    <p class="text-gray-700">También conocido como ES2015, ES6 fue la mayor actualización del lenguaje hasta ese momento. Introdujo características modernas como let, const, clases, funciones flecha, módulos, promesas y destructuración. Transformó la forma de escribir JavaScript, haciéndolo más estructurado y mantenible, y marcó el inicio del "JavaScript moderno".</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">ES6</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">ES2015</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Clases</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Promesas</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Módulos</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2016 Yarn -->
+            <div class="timeline-item" data-year="2016a">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-red-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🔴</div>
+                        <h2 class="text-2xl font-bold">2016 – Creación de Yarn</h2>
+                    </div>
+                    <p class="text-gray-700">Yarn fue lanzado por Facebook como un nuevo gestor de paquetes alternativo a npm. Prometía mayor seguridad, rendimiento y determinismo en las instalaciones. Ayudó a mejorar el flujo de trabajo con dependencias en proyectos grandes, lo que impulsó mejores prácticas en la gestión de paquetes en el ecosistema JavaScript.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Yarn</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Facebook</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">npm</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Paquetes</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2016 Vue.js -->
+            <div class="timeline-item" data-year="2016b">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-purple-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-purple-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟣</div>
+                        <h2 class="text-2xl font-bold">2016 – Lanzamiento oficial de Vue.js 2</h2>
+                    </div>
+                    <p class="text-gray-700">Vue.js, un framework progresivo para construir interfaces de usuario, se consolidó con su versión 2. Su enfoque minimalista, reactivo y sencillo lo hizo especialmente popular entre desarrolladores que buscaban una alternativa más ligera y flexible a frameworks como Angular o React.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Vue.js</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Framework</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Reactivo</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">SPA</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2020 Deno -->
+            <div class="timeline-item" data-year="2020">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-orange-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-orange-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟠</div>
+                        <h2 class="text-2xl font-bold">2020 – Deno 1.0</h2>
+                    </div>
+                    <p class="text-gray-700">Creado por el mismo autor de Node.js, Deno es un entorno moderno para ejecutar JavaScript y TypeScript. Corrige errores de diseño de Node.js e incluye características como seguridad por defecto, soporte nativo para TypeScript y un sistema de módulos sin node_modules. Representa un nuevo enfoque en la ejecución de JS fuera del navegador.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Deno</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">TypeScript</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Ryan Dahl</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Seguridad</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2021 ES12 -->
+            <div class="timeline-item" data-year="2021">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-amber-800">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-amber-800 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟤</div>
+                        <h2 class="text-2xl font-bold">2021 – ECMAScript 2021 (ES12)</h2>
+                    </div>
+                    <p class="text-gray-700">ES12 introdujo mejoras significativas como operadores lógicos de asignación (&&=, ||=, ??=), el método replaceAll() para strings, y soporte para promesas en Promise.any(). Aunque menos revolucionario que ES6, sigue afinando el lenguaje para facilitar código más limpio y expresivo.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">ES12</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Operadores lógicos</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">replaceAll()</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Promise.any()</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2023 React Server Components -->
+            <div class="timeline-item" data-year="2023">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-black">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-black text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">⚫</div>
+                        <h2 class="text-2xl font-bold">2023 – React Server Components</h2>
+                    </div>
+                    <p class="text-gray-700">Meta (antes Facebook) presentó los React Server Components como una forma de mejorar el rendimiento en aplicaciones React. Permiten renderizar componentes en el servidor sin enviar toda la lógica al cliente, reduciendo el tamaño del bundle y mejorando la experiencia del usuario, especialmente en apps grandes.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">React</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Meta</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Server Components</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Rendimiento</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2024 WebGPU -->
+            <div class="timeline-item" data-year="2024">
+                <div class="card bg-white rounded-xl p-6 border-l-8 border-orange-500">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-orange-500 text-white text-2xl font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4">🟠</div>
+                        <h2 class="text-2xl font-bold">2024 – WebGPU</h2>
+                    </div>
+                    <p class="text-gray-700">WebGPU es la nueva API web que permite acceso directo a la GPU desde JavaScript, superando a WebGL. Publicada oficialmente en 2024, permite gráficos 3D más complejos y cálculos paralelos de alto rendimiento, acercando aún más el desarrollo web al rendimiento nativo en videojuegos y apps científicas.</p>
+                    
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">WebGPU</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">GPU</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Gráficos 3D</span>
+                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">Rendimiento</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+     <div style="margin-top: 30px;">
+        <footer class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-gray-800">Integrantes</h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">Antunez Ramirez Diego <br> Niebla Rosales Natalia <br> Vazquez Karen <br> Vargas Perez Cristian Arturo <br> Villarreal Gallegos Daniel Aurelio</p>
+    </footer>
+     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const timelineDots = document.querySelectorAll('.timeline-dot');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentIndex = 0;
+            
+            // Hide all items initially except the first one
+            timelineItems.forEach((item, index) => {
+                if (index !== 0) {
+                    item.style.display = 'none';
+                } else {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Highlight the first dot
+            timelineDots[0].classList.add('pulse-animation');
+            
+            // Function to show a specific item
+            function showItem(index) {
+                // Hide all items
+                timelineItems.forEach(item => {
+                    item.style.display = 'none';
+                    item.classList.remove('active');
+                });
+                
+                // Remove pulse animation from all dots
+                timelineDots.forEach(dot => {
+                    dot.classList.remove('pulse-animation');
+                });
+                
+                // Show the selected item
+                timelineItems[index].style.display = 'block';
+                
+                // Add a small delay before adding the active class for animation
+                setTimeout(() => {
+                    timelineItems[index].classList.add('active');
+                }, 50);
+                
+                // Add pulse animation to the current dot
+                timelineDots[index].classList.add('pulse-animation');
+                
+                // Update current index
+                currentIndex = index;
+                
+                // Update button states
+                updateButtonStates();
+            }
+            
+            // Function to update button states
+            function updateButtonStates() {
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === timelineItems.length - 1;
+                
+                prevBtn.style.opacity = prevBtn.disabled ? '0.5' : '1';
+                nextBtn.style.opacity = nextBtn.disabled ? '0.5' : '1';
+            }
+            
+            // Event listeners for dots
+            timelineDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    showItem(index);
+                });
+            });
+            
+            // Event listeners for navigation buttons
+            prevBtn.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    showItem(currentIndex - 1);
+                }
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                if (currentIndex < timelineItems.length - 1) {
+                    showItem(currentIndex + 1);
+                }
+            });
+            
+            // Initialize button states
+            updateButtonStates();
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    showItem(currentIndex - 1);
+                } else if (e.key === 'ArrowRight' && currentIndex < timelineItems.length - 1) {
+                    showItem(currentIndex + 1);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
